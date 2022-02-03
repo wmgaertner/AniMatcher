@@ -3,10 +3,19 @@ from fastapi import FastAPI
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+    try:
+        tf.config.experimental.set_virtual_device_configuration(
+            gpus[0],
+            [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=2048)])
+    except:
+        pass
 
-app = FastAPI()
 
 loaded = tf.saved_model.load("saved_model/my_model")
+
+app = FastAPI()
 
 @app.get("/")
 async def root():
